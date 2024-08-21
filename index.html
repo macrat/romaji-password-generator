@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<head lang="ja">
+  <title>ローマ字パスワードジェネレーター</title>
+  <meta encoding="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ローマ字として読むことができるパスワードをランダムに生成します。">
+  <script>
+function GenerateRomajiPassword(length=8) {
+  const patterns = [
+    'A', 'I', 'U', 'E', 'O',
+    'KA', 'KI', 'KU', 'KE', 'KO',
+    'SA', 'SHI', 'SI', 'SU', 'SE', 'SO',
+    'TA', 'CHI', 'TI', 'TSU', 'TU', 'TE', 'TO',
+    'NA', 'NI', 'NU', 'NE', 'NO',
+    'HA', 'HI', 'FU', 'HU', 'HE', 'HO',
+    'MA', 'MI', 'MU', 'ME', 'MO',
+    'YA', 'YU', 'YO',
+    'RA', 'RI', 'RU', 'RE', 'RO',
+    'LA', 'LI', 'LU', 'LE', 'LO',
+    'WA', 'WO',
+    'N',
+    'GA', 'GI', 'GU', 'GE', 'GO',
+    'ZA', 'JI', 'ZI', 'ZU', 'ZE', 'ZO',
+    'DA', 'JI', 'DI', 'ZU', 'DU', 'DE', 'DO',
+    'BA', 'BI', 'BU', 'BE', 'BO',
+    'VA', 'VI', 'VU', 'VE', 'VO',
+    'PA', 'PI', 'PU', 'PE', 'PO',
+    'KYA', 'KYU', 'KYO',
+    'QA', 'QI', 'QU', 'QE', 'QO',
+    'SHA', 'SHU', 'SHO',
+    'SYA', 'SYU', 'SYO',
+    'CHA', 'CHU', 'CHO',
+    'NYA', 'NYI', 'NYU', 'NYE', 'NYO',
+    'HYA', 'YHU', 'HYO',
+    'FA', 'FI', 'FU', 'FE', 'FO',
+    'MYA', 'MYU', 'MYO',
+    'RYA', 'RYU', 'RYO',
+    'GYA', 'GYU', 'GYO',
+    'JA', 'JU', 'JO',
+    'ZYA', 'ZYU', 'ZYO',
+    'BYA', 'BYU', 'BYO',
+    'PYA', 'PYU', 'PYO',
+  ];
+  const rand = (n) => crypto.getRandomValues(new Uint8Array(1))[0]%n;
+
+  let pass = [];
+  let len = 0;
+  while (true) {
+    const x = patterns[rand(patterns.length)];
+    if (len + x.length > length - 1) {
+      break;
+    }
+    len += x.length;
+    pass.push(x);
+  }
+
+  for (let i = 0; i < pass.length; i++) {
+    if (rand(2) === 0) {
+      pass[i] = pass[i].toLowerCase();
+    }
+  }
+
+  const lower = rand(pass.length);
+  pass[lower] = pass[lower].toLowerCase();
+  let upper = 0;
+  while ((upper = rand(pass.length)) === lower);
+  pass[upper] = pass[upper].toUpperCase();
+
+  for (let i = 0; i < length-len; i++) {
+    const pos = rand(pass.length)
+    pass.splice(pos, 0, (rand(9) + 1).toString());
+  }
+
+  return pass.join('');
+}
+  </script>
+  <style>
+body {
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 12px;
+}
+li {
+  padding: 2px 0;
+  font-family: monospace;
+  font-size: inherit;
+  overflow-wrap: anywhere;
+}
+form {
+  text-align: center;
+  margin: 24px 0 0;
+}
+  </style>
+</head>
+
+<body>
+  <h1>ローマ字パスワードジェネレーター</h1>
+
+  <p>ローマ字として読むことができるパスワードをランダムに生成します。</p>
+
+  <hr>
+
+  <form id=form>
+    <label>長さ <input type=number min=1 max=200 id=lengthInput value=8></label>
+    <label>生成数 <input type=number min=1 max=10000 id=timesInput value=40></label>
+    <button>生成</button>
+  </form>
+
+  <ol id=list></ol>
+
+  <script>
+(() => {
+  const initialLength = parseInt(localStorage.getItem('password-length'));
+  if (initialLength) {
+    lengthInput.value = initialLength;
+  }
+
+  (function gen() {
+    const length = parseInt(lengthInput.value);
+    const times = parseInt(timesInput.value);
+
+    list.innerHTML = '';
+    list.style.columns = `${length / 2}em 8`;
+
+    for (let i = 0; i < times; i++) {
+      const li = document.createElement('li');
+      li.textContent = GenerateRomajiPassword(length);
+      list.appendChild(li);
+    }
+  })();
+
+  lengthInput.addEventListener('input', (ev) => {
+    localStorage.setItem('password-length', lengthInput.value);
+  });
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    gen();
+  });
+})();
+  </script>
+</body>
