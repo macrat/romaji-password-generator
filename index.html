@@ -116,7 +116,7 @@ form {
     lengthInput.value = initialLength;
   }
 
-  (function gen() {
+  function gen() {
     const length = parseInt(lengthInput.value);
     const times = parseInt(timesInput.value);
 
@@ -128,7 +128,8 @@ form {
       li.textContent = GenerateRomajiPassword(length);
       list.appendChild(li);
     }
-  })();
+  };
+  gen();
 
   lengthInput.addEventListener('input', (ev) => {
     localStorage.setItem('password-length', lengthInput.value);
