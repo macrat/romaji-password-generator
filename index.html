@@ -102,7 +102,7 @@ form {
   <hr>
 
   <form id=form>
-    <label>長さ <input type=number min=4 max=1000 id=lengthInput value=8></label>
+    <label>長さ <input type=number min=8 max=1000 id=lengthInput value=8></label>
     <label>生成数 <input type=number min=1 max=10000 id=timesInput value=40></label>
     <button>生成</button>
   </form>
@@ -111,13 +111,13 @@ form {
 
   <script>
 (() => {
-  const initialLength = Math.max(4, Math.min(1000, parseInt(localStorage.getItem('password-length'))));
+  const initialLength = Math.max(8, Math.min(1000, parseInt(localStorage.getItem('password-length'))));
   if (initialLength) {
     lengthInput.value = initialLength;
   }
 
   function gen() {
-    const length = Math.max(4, Math.min(1000, parseInt(lengthInput.value)));
+    const length = Math.max(8, Math.min(1000, parseInt(lengthInput.value)));
     const times = Math.max(1, Math.min(10000, parseInt(timesInput.value)));
 
     list.innerHTML = '';
